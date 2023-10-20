@@ -3,7 +3,6 @@ package main
 import (
 	"fmt"
 	"github.com/Frank-Krick/sego/midi/windows"
-	"time"
 )
 
 func main() {
@@ -25,15 +24,13 @@ func main() {
 	}
 
 	fmt.Println("Sending note on message")
-	err = windows.SendShortNoteOnMessage(device, 0, 0, 0)
+	err = device.SendNoteOnMessage(0x13, 0x40, 3)
 	if err != nil {
 		fmt.Println(err)
 	}
 
-	time.Sleep(10 * time.Second)
-
 	fmt.Println("Sending note off message")
-	err = windows.SendShortNoteOffMessage(device, 0, 0, 0)
+	err = device.SendNoteOffMessage(0x13, 3)
 	if err != nil {
 		fmt.Println(err)
 	}

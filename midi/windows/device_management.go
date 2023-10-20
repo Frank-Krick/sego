@@ -48,3 +48,25 @@ func ListMidiOutDevices() ([]MidiOutDeviceDescription, error) {
 		return MidiOutDeviceDescription{DeviceIndex: index, Name: windows.ByteSliceToString(descriptor.Name[:])}
 	}), nil
 }
+
+type MidiOutDevice struct {
+	Handle uint
+}
+
+func OpenMidiOutDevice(deviceInfo MidiOutDeviceDescription) (MidiOutDevice, error) {
+	midiOutDevice := MidiOutDevice{}
+	returnCode, _, err := procMidiOutOpen.Call(uintptr(unsafe.Pointer(&midiOutDevice.Handle)), uintptr(deviceInfo.DeviceIndex), uintptr(0), 0)
+	if err != nil && returnCode != 0 {
+		return MidiOutDevice{}, err
+	}
+
+	return midiOutDevice, nil
+}
+
+func CloseMidiOutDevice(device MidiOutDevice) error {
+	returnCode, _, err := procMidiOutClose.Call(uintptr(device.Handle))
+	if err != nil && returnCode != 0 {
+		return err
+	}
+	return nil
+}
